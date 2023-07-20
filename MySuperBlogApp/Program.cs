@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MySuperBlogApp.Data;
 using MySuperBlogApp.Models;
+using MySuperBlogApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +32,10 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<MyAppDataContext>(
     options => options.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MySuperBlogAppDB;Trusted_Connection=True;"));
+
+builder.Services.AddTransient<UsersService>();
+builder.Services.AddTransient<NewsService>();
+builder.Services.AddScoped<NoSQLDataService>();
 
 var app = builder.Build();
 

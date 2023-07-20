@@ -17,9 +17,9 @@ namespace MySuperBlogApp.Controllers
     public class AccountController : ControllerBase
     {
         private UsersService _userService;
-        public AccountController(MyAppDataContext dataContext) 
+        public AccountController(UsersService userService) 
         {
-            _userService = new UsersService(dataContext);
+            _userService = userService;
         }
 
         [HttpGet]

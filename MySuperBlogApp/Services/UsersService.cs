@@ -1,5 +1,6 @@
 ﻿using MySuperBlogApp.Data;
 using MySuperBlogApp.Models;
+
 using System.Security.Claims;
 using System.Text;
 
@@ -8,9 +9,13 @@ namespace MySuperBlogApp.Services
     public class UsersService
     {
         private MyAppDataContext _dataContext;
-        public UsersService(MyAppDataContext dataContext)
+        private NoSQLDataService _noSQLDataService;
+        public UsersService(
+            MyAppDataContext dataContext, 
+            NoSQLDataService noSQLDataService)
         {
             _dataContext = dataContext;
+            _noSQLDataService = noSQLDataService;
         }
 
         public UserModel Create(UserModel userModel)
@@ -110,15 +115,42 @@ namespace MySuperBlogApp.Services
             return _dataContext.Users.FirstOrDefault(x => x.Email == email);
         }
 
+        public List<UserModel> GetUsersByName(string name)
+        {
+            string nameLower = name.ToLower();
+            return _dataContext.Users
+                .Where(x => x.Name.ToLower()
+                .StartsWith(nameLower))
+                .Select(ToModel)
+                .ToList();
+        }
+
         public void DeleteUser(User user)
         {
             _dataContext.Users.Remove(user);
             _dataContext.SaveChanges();
         }
 
+        public void Subscribe(int from, int to)
+        {
+            _noSQLDataService.SetUserSubs(from, to);
+        }
+
         private bool VerifyHashedPassword(string password1, string password2)
         {
             return password1 == password2;
+        }
+
+        private UserModel ToModel(User user)
+        {
+            return new UserModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Description = user.Description,
+                Photo = user.Photo,
+            };
         }
     }
 }

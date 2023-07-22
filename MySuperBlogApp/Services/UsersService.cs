@@ -37,6 +37,27 @@ namespace MySuperBlogApp.Services
             return userModel;
         }
 
+        public List<UserModel> Create(List<UserModel> users)
+        {
+            var usersList = new List<UserModel>();
+            foreach (var userModel in users)
+            {
+                var newUser = new User
+                {
+                    Name = userModel.Name,
+                    Email = userModel.Email,
+                    Password = userModel.Password,
+                    Description = userModel.Description,
+                    Photo = userModel.Photo,
+                };
+
+                _dataContext.Users.Add(newUser);
+            }
+            _dataContext.SaveChanges();
+
+            return users;
+        }
+
         public UserModel Update(UserModel userModel)
         {
             var userToUpdate = _dataContext.Users.FirstOrDefault(x => x.Id == userModel.Id);
@@ -115,13 +136,22 @@ namespace MySuperBlogApp.Services
             return _dataContext.Users.FirstOrDefault(x => x.Email == email);
         }
 
-        public List<UserModel> GetUsersByName(string name)
+        public UserProfile? GetUserProfileById(int userId)
+        {
+            var user = _dataContext.Users.FirstOrDefault(x => x.Id == userId);
+
+            if (user is null) return null;
+
+            return ToProfile(user);
+        }
+
+        public List<UserShortModel> GetUsersByName(string name)
         {
             string nameLower = name.ToLower();
             return _dataContext.Users
                 .Where(x => x.Name.ToLower()
                 .StartsWith(nameLower))
-                .Select(ToModel)
+                .Select(ToShortModel)
                 .ToList();
         }
 
@@ -149,6 +179,31 @@ namespace MySuperBlogApp.Services
                 Name = user.Name,
                 Email = user.Email,
                 Description = user.Description,
+                Photo = user.Photo,
+            };
+        }
+
+        private UserProfile ToProfile(User user)
+        {
+            var usersSubs = _noSQLDataService.GetUserSubs(user.Id);
+            return new UserProfile
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                Description = user.Description,
+                Photo = user.Photo,
+                SubsCount = usersSubs?.Users.Count ?? 0
+            };
+        }
+
+        private UserShortModel ToShortModel(User user)
+        {
+            return new UserShortModel
+            {
+                Id = user.Id,
+                Name = user.Name,
+                Description = new string(user.Description?.Take(50).ToArray()),
                 Photo = user.Photo,
             };
         }

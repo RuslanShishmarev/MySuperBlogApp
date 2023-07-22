@@ -55,6 +55,20 @@ namespace MySuperBlogApp.Controllers
             return Ok(newsModelNew);
         }
 
+        [HttpPost("all")]
+        public IActionResult Create([FromBody] List<NewsModel> newsModels)
+        {
+            var currentUser = _userService.GetUserByLogin(HttpContext.User.Identity.Name);
+            if (currentUser == null)
+            {
+                return NotFound();
+            }
+
+            var newsModelNew = _newsService.Create(newsModels, currentUser.Id);
+
+            return Ok(newsModelNew);
+        }
+
         [HttpPatch]
         public IActionResult Update([FromBody] NewsModel newsModel)
         {

@@ -10,7 +10,7 @@
 
         public string Description { get; set; }
 
-        public byte[]? Photo { get; set; }
+        public object Photo { get; set; }
 
         public int SubsCount { get; set; }
     }

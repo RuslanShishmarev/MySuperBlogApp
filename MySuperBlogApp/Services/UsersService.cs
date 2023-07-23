@@ -26,7 +26,7 @@ namespace MySuperBlogApp.Services
                 Email = userModel.Email,
                 Password = userModel.Password,
                 Description = userModel.Description,
-                Photo = userModel.Photo,
+                Photo = userModel.GetPhoto(),
             };
 
             _dataContext.Users.Add(newUser);
@@ -48,7 +48,7 @@ namespace MySuperBlogApp.Services
                     Email = userModel.Email,
                     Password = userModel.Password,
                     Description = userModel.Description,
-                    Photo = userModel.Photo,
+                    Photo = userModel.GetPhoto(),
                 };
 
                 _dataContext.Users.Add(newUser);
@@ -71,7 +71,7 @@ namespace MySuperBlogApp.Services
             userToUpdate.Email = userModel.Email;
             userToUpdate.Password = userModel.Password;
             userToUpdate.Description = userModel.Description;
-            userToUpdate.Photo = userModel.Photo;
+            userToUpdate.Photo = userModel.GetPhoto();
 
             _dataContext.Users.Update(userToUpdate);
             _dataContext.SaveChanges();
@@ -85,7 +85,7 @@ namespace MySuperBlogApp.Services
             userToUpdate.Email = userModel.Email;
             userToUpdate.Password = userModel.Password;
             userToUpdate.Description = userModel.Description;
-            userToUpdate.Photo = userModel.Photo;
+            userToUpdate.Photo = userModel.GetPhoto();
 
             _dataContext.Users.Update(userToUpdate);
             _dataContext.SaveChanges();
@@ -171,19 +171,7 @@ namespace MySuperBlogApp.Services
             return password1 == password2;
         }
 
-        private UserModel ToModel(User user)
-        {
-            return new UserModel
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Email = user.Email,
-                Description = user.Description,
-                Photo = user.Photo,
-            };
-        }
-
-        private UserProfile ToProfile(User user)
+        public UserProfile ToProfile(User user)
         {
             var usersSubs = _noSQLDataService.GetUserSubs(user.Id);
             return new UserProfile

@@ -32,14 +32,9 @@ namespace MySuperBlogApp.Controllers
             {
                 return NotFound();
             }
-            return Ok(new UserModel
-            {
-                Id = currentUser.Id,
-                Name = currentUser.Name,
-                Email = currentUser.Email,
-                Description = currentUser.Description,
-                Photo = currentUser.Photo,
-            });
+
+            var profile = _userService.ToProfile(currentUser);
+            return Ok(profile);
         }
 
         [HttpPost]

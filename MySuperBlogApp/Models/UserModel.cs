@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System.Text;
-
-namespace MySuperBlogApp.Models
+﻿namespace MySuperBlogApp.Models
 {
     public class UserModel
     {
@@ -16,24 +13,5 @@ namespace MySuperBlogApp.Models
         public string Description { get; set; }
 
         public string Photo { get; set; }
-
-        public byte[] GetPhoto()
-        {
-            try
-            {
-                return JsonConvert.DeserializeObject<byte[]>(Photo);
-            }
-            catch
-            {
-                try
-                {
-                    return JsonConvert.DeserializeObject<byte[]>("[" + Photo + "]");
-                }
-                catch
-                {
-                    return Array.Empty<byte>();
-                }
-            }
-        }
     }
 }

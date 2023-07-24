@@ -26,7 +26,7 @@ namespace MySuperBlogApp.Services
                 Email = userModel.Email,
                 Password = userModel.Password,
                 Description = userModel.Description,
-                Photo = userModel.GetPhoto(),
+                Photo = ImageService.GetPhoto(userModel.Photo),
             };
 
             _dataContext.Users.Add(newUser);
@@ -48,7 +48,7 @@ namespace MySuperBlogApp.Services
                     Email = userModel.Email,
                     Password = userModel.Password,
                     Description = userModel.Description,
-                    Photo = userModel.GetPhoto(),
+                    Photo = ImageService.GetPhoto(userModel.Photo),
                 };
 
                 _dataContext.Users.Add(newUser);
@@ -71,7 +71,7 @@ namespace MySuperBlogApp.Services
             userToUpdate.Email = userModel.Email;
             userToUpdate.Password = userModel.Password;
             userToUpdate.Description = userModel.Description;
-            userToUpdate.Photo = userModel.GetPhoto();
+            userToUpdate.Photo = ImageService.GetPhoto(userModel.Photo);
 
             _dataContext.Users.Update(userToUpdate);
             _dataContext.SaveChanges();
@@ -85,7 +85,7 @@ namespace MySuperBlogApp.Services
             userToUpdate.Email = userModel.Email;
             userToUpdate.Password = userModel.Password;
             userToUpdate.Description = userModel.Description;
-            userToUpdate.Photo = userModel.GetPhoto();
+            userToUpdate.Photo = ImageService.GetPhoto(userModel.Photo);
 
             _dataContext.Users.Update(userToUpdate);
             _dataContext.SaveChanges();

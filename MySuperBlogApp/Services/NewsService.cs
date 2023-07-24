@@ -15,12 +15,12 @@ namespace MySuperBlogApp.Services
             _noSQLDataService = noSQLDataService;
         }
 
-        public List<NewsModel> GetByAuthor(int userId)
+        public List<NewsView> GetByAuthor(int userId)
         {
             var news = _dataContext.News.Where(x => x.AuthorId == userId)
                 .OrderBy(x => x.PostDate)
                 .Reverse()
-                .Select(ToModel)
+                .Select(ToView)
                 .ToList();
             return news;
         }
@@ -31,7 +31,7 @@ namespace MySuperBlogApp.Services
             {
                 AuthorId = userId,
                 Text = newsModel.Text,
-                Image = newsModel.Image,
+                Image = ImageService.GetPhoto(newsModel.Image),
                 PostDate = DateTime.Now,
             };
 
@@ -52,7 +52,7 @@ namespace MySuperBlogApp.Services
                 {
                     AuthorId = userId,
                     Text = newsModel.Text,
-                    Image = newsModel.Image,
+                    Image = ImageService.GetPhoto(newsModel.Image),
                     PostDate = DateTime.Now,
                 };
 
@@ -63,7 +63,7 @@ namespace MySuperBlogApp.Services
             return newsModels;
         }
 
-        public NewsModel Update(NewsModel newsModel, int userId)
+        public NewsView Update(NewsModel newsModel, int userId)
         {
             var newsToUpdate = _dataContext.News
                 .FirstOrDefault(x => x.Id == newsModel.Id && x.AuthorId == userId);
@@ -74,14 +74,16 @@ namespace MySuperBlogApp.Services
             }
 
             newsToUpdate.Text = newsModel.Text;
-            newsToUpdate.Image = newsModel.Image;
+            var photo = ImageService.GetPhoto(newsModel.Image);
+            if (!(newsToUpdate.Image?.Length > 10 && photo.Length < 10)) 
+                newsToUpdate.Image = photo;
 
             _dataContext.News.Update(newsToUpdate);
             _dataContext.SaveChanges();
 
-            newsModel = ToModel(newsToUpdate);
+            var newsView = ToView(newsToUpdate);
 
-            return newsModel;
+            return newsView;
         }
 
         public void Delete(int newsId, int userId)
@@ -98,18 +100,18 @@ namespace MySuperBlogApp.Services
             _dataContext.SaveChanges();
         }
 
-        public List<NewsModel> GetNewsForCurrentUser(int userId)
+        public List<NewsView> GetNewsForCurrentUser(int userId)
         {
             var subs = _noSQLDataService.GetUserSubs(userId);
 
-            var allNews = new List<NewsModel>();
+            var allNews = new List<NewsView>();
 
             if (subs is null) return allNews;
 
             foreach (var sub in subs.Users)
             {
                 var allNewsByAuthor = _dataContext.News.Where(x => x.AuthorId == sub.Id);
-                allNews.AddRange(allNewsByAuthor.Select(ToModel));
+                allNews.AddRange(allNewsByAuthor.Select(ToView));
             }
 
 
@@ -125,10 +127,10 @@ namespace MySuperBlogApp.Services
                 newsId: newsId);
         }
 
-        private NewsModel ToModel(News news)
+        private NewsView ToView(News news)
         {
             var likes = _noSQLDataService.GetNewsLike(news.Id);
-            var newsModel = new NewsModel
+            var newsModel = new NewsView
             {
                 Id = news.Id,
                 Text = news.Text,
@@ -141,9 +143,9 @@ namespace MySuperBlogApp.Services
         }
     }
 
-    class NewsComparer : IComparer<NewsModel>
+    class NewsComparer : IComparer<NewsView>
     {
-        public int Compare(NewsModel? x, NewsModel? y)
+        public int Compare(NewsView? x, NewsView? y)
         {
             if (x.PostDate > y.PostDate) return -1;
             if (x.PostDate < y.PostDate) return 1;

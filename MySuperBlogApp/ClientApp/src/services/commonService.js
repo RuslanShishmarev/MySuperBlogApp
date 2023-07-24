@@ -10,6 +10,7 @@ const ISONLINE_NAME = 'ONLINE';
 export const PROFILE_URL = '/profile';
 export const LOGIN_URL = '/login';
 export const SIGNUP_URL = '/signup';
+export const ALLUSERS_URL = '/all';
 
 export async function getToken(login, password){
     const url = ACCOUNT_URL + '/token';
@@ -73,8 +74,13 @@ export async function sendRequestWithToken(url, method, data, withToken = true){
     // Отправляем запрос с помощью fetch
     var resultFetch = await fetch(url, requestOptions);
     if (resultFetch.ok) {
+      try {
         const result = await resultFetch.json();
         return result;
+      }
+      catch {
+        return;
+      }
     }
     else {
         // Произошла ошибка при выполнении запроса

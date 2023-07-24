@@ -20,6 +20,14 @@ code {
   border-radius: 15px;
 }
 
+.news-item .img-box {
+  width: 50%;
+}
+.news-item .news-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .user-short {
   display: flex;  
   margin: 5%;

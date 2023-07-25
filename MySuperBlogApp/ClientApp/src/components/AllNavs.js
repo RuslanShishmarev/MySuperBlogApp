@@ -1,5 +1,5 @@
 import { NavItem, NavLink } from "reactstrap";
-import { ALLUSERS_URL, LOGIN_URL, PROFILE_URL, isUserOnline } from "../services/commonService";
+import { ALLNEWS_URL, ALLUSERS_URL, LOGIN_URL, PROFILE_URL, isUserOnline } from "../services/commonService";
 import { Link } from 'react-router-dom';
 
 
@@ -11,6 +11,10 @@ const AllNavs = () => {
         ];
 
     if (isUserOnline()){
+        navs.push(
+        <NavItem>
+            <NavLink tag={Link} className="text-dark" to={ALLNEWS_URL}>Wall</NavLink>
+        </NavItem>);
         navs.push(
         <NavItem>
             <NavLink tag={Link} className="text-dark" to={ALLUSERS_URL}>Search</NavLink>

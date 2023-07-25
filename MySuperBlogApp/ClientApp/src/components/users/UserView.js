@@ -2,10 +2,10 @@ import { PROFILE_URL } from '../../services/commonService';
 import { createNews } from '../../services/newsService';
 import ImageComponent from '../ImageComponent';
 import ModalButton from '../ModalButton';
-import { NewsByUser } from '../news/News';
+import { NewsByUser, NewsProfileView } from '../news/News';
 import NewsCreation from '../news/NewsCreation';
 
-const UserView = ({user}) => {
+const UserView = ({user, isProfile}) => {
 
   const addNewNews = async (news) => {
     await createNews(news);
@@ -35,11 +35,17 @@ const UserView = ({user}) => {
           </div>
         </div>
       </div>
-      <ModalButton 
+
+      {isProfile ? 
+      <div>
+        <ModalButton 
           btnName = {'Add post'}
           modalContent = {<NewsCreation id = {0} oldtext={''} oldImage={''} setAction={addNewNews}/>} 
-          title = {'New post'}/>
-      <NewsByUser userId={user.id} />
+          title = {'New post'}/> 
+        <NewsProfileView  userId={user.id} />
+      </div> : 
+          
+          <NewsByUser userId={user.id} />}
     </div>
     )
 }

@@ -35,7 +35,7 @@ builder.Services.AddDbContext<MyAppDataContext>(
 
 builder.Services.AddTransient<UsersService>();
 builder.Services.AddTransient<NewsService>();
-builder.Services.AddScoped<NoSQLDataService>();
+builder.Services.AddTransient<NoSQLDataService>();
 
 var app = builder.Build();
 
